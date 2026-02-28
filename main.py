@@ -16,9 +16,11 @@ def webhook():
     data = request.json
     print("DATA:", data)
 
-    if "message" in data:
-        chat_id = data["message"]["chat"]["id"]
-        text = data["message"].get("text", "")
+    msg = data.get("message") or data.get("business_message")
+
+    if msg:
+        chat_id = msg["chat"]["id"]
+        text = msg.get("text", "")
 
         print("TEXT:", text)
 
@@ -26,8 +28,6 @@ def webhook():
             model="gpt-4o-mini",
             messages=[{"role": "user", "content": text}]
         )
-
-        print("RESPONSE:", response)
 
         answer = response.choices[0].message.content
         print("ANSWER:", answer)
