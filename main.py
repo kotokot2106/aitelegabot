@@ -14,17 +14,24 @@ def send_message(chat_id, text):
 @app.route("/", methods=["POST"])
 def webhook():
     data = request.json
+    print("DATA:", data)
 
     if "message" in data:
         chat_id = data["message"]["chat"]["id"]
         text = data["message"].get("text", "")
+
+        print("TEXT:", text)
 
         response = client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[{"role": "user", "content": text}]
         )
 
+        print("RESPONSE:", response)
+
         answer = response.choices[0].message.content
+        print("ANSWER:", answer)
+
         send_message(chat_id, answer)
 
     return "ok"
