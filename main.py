@@ -5,11 +5,11 @@ from openai import OpenAI
 
 app = Flask(__name__)
 
-client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
-TELEGRAM_TOKEN = os.environ["TELEGRAM_TOKEN"]
+client = OpenAI(api_key=os.environ["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"])
+TELEGRAM_TOKEN = os.environ["8771274594:AAHIp3IvuFPKqJ0VY-cvVnHfehcGlT1mZ_k"]
 
 def send_message(chat_id, text):
-    url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
+    url = f"https://api.telegram.org/bot{8771274594:AAHIp3IvuFPKqJ0VY-cvVnHfehcGlT1mZ_k}/sendMessage"
     requests.post(url, json={"chat_id": chat_id, "text": text})
 
 @app.route("/", methods=["POST"])
