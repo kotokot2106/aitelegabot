@@ -5,8 +5,11 @@ from openai import OpenAI
 
 app = Flask(__name__)
 
-# ключи из Railway
-client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
+client = OpenAI(
+    api_key=os.environ["HERMES_API_KEY"],
+    base_url="https://inference-api.nousresearch.com/v1"
+)
+
 TELEGRAM_TOKEN = os.environ["TELEGRAM_TOKEN"]
 
 
@@ -27,7 +30,6 @@ def send_message(chat_id, text, connection_id=None):
 @app.route("/", methods=["POST"])
 def webhook():
     data = request.json
-    print("DATA:", data)
 
     msg = data.get("message") or data.get("business_message")
 
@@ -35,30 +37,18 @@ def webhook():
         chat_id = msg["chat"]["id"]
         connection_id = msg.get("business_connection_id")
 
-        if "text" in msg:
-            text = msg["text"]
-
-        elif "voice" in msg:
-            text = "User sent a voice message."
-
-        elif "sticker" in msg:
-            text = "User sent a sticker."
-
-        else:
-            text = "User sent something else."
-
-        print("TEXT:", text)
+        text = msg.get("text", "User sent non-text message")
 
         response = client.chat.completions.create(
-            model="gpt-4o-mini",
+            model="Hermes-4-70B",
             messages=[
                 {"role": "system", "content": "You are a helpful assistant."},
                 {"role": "user", "content": text}
-            ]
+            ],
+            max_tokens=300
         )
 
         answer = response.choices[0].message.content
-        print("ANSWER:", answer)
 
         send_message(chat_id, answer, connection_id)
 
