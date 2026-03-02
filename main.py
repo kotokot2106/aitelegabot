@@ -35,7 +35,7 @@ def webhook():
 
     if msg:
         chat_id = msg["chat"]["id"]
-        connection_id = msg("business_connection_id")
+        connection_id = msg.get("business_connection_id")
 
         text = msg.get("text", "User sent non-text message")
 
@@ -49,7 +49,6 @@ def webhook():
         )
 
         answer = response.choices[0].message.content
-
         send_message(chat_id, answer, connection_id)
 
     return "ok"
